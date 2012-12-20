@@ -3,23 +3,28 @@ var choice = require('../'),
 
 describe('Actor', function () {
   beforeEach(function () {
-    this.begun = false
-    this.ended = false
+    var self = this
 
-    this.actor = choice.createActor({
+    self.begun = false
+    self.ended = false
+
+    self.actor = choice.createActor({
       Test: {
-        begin: function () {
-          this.begun = true
+        begin: function (previousState) {
+          self.begun = true
+          this.previousState = previousState
         },
-        end: function () {
-          this.ended = true
+        end: function (nextState) {
+          self.ended = true
+          this.nextState = nextState
         },
         method: function () {
           this.methodCalled = true
         }
-      }
+      },
+      Empty: {}
     })
-    this.actor.methodCalled = false
+    self.actor.methodCalled = false
   })
 
   it('should start at the "null" state', function () {
@@ -39,6 +44,14 @@ describe('Actor', function () {
       this.actor.goToState('Test')
 
       expect(this.actor.method).to.exist
+    })
+
+    it('should preserve this in injected methods', function () {
+      this.actor.goToState('Test')
+
+      this.actor.method()
+
+      expect(this.actor.methodCalled).to.be.true
     })
 
     it('should allow going back to the "null" state', function () {
@@ -69,6 +82,29 @@ describe('Actor', function () {
       expect(this.ended).to.be.true
     })
 
+    it('should pass the previous state name to "begin"', function () {
+      this.actor.goToState('Test')
+
+      expect(this.actor.previousState).to.equal(null)
+
+      this.actor.goToState('Empty')
+      this.actor.goToState('Test')
+
+      expect(this.actor.previousState).to.equal('Empty')
+    })
+
+    it('should pass the next state name to "end"', function () {
+      this.actor.goToState('Test')
+      this.actor.goToState('Empty')
+
+      expect(this.actor.nextState).to.equal('Empty')
+
+      this.actor.goToState('Test')
+      this.actor.goToState(null)
+
+      expect(this.actor.nextState).to.equal(null)
+    })
+
     it('should not re-transition to the new state', function () {
       this.actor.goToState('Test')
 
@@ -88,10 +124,16 @@ describe('Actor', function () {
     it('should fail gracefully', function () {
       this.actor.goToState('Fail')
 
-      expect(this.actor.state).to.equal('Fail')
+      expect(this.actor.state).to.equal(null)
       expect(this.actor.method).to.not.exist
       expect(this.begun).to.be.false
       expect(this.ended).to.be.false
+
+      this.actor.goToState('Test')
+      this.actor.goToState('Fail')
+
+      expect(this.actor.previousState).to.equal(null)
+      expect(this.actor.nextState).to.equal(null)
     })
   })
 

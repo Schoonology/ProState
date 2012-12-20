@@ -8,5 +8,9 @@
     "test": "mocha --reporter spec"
   },
   "repository": "",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "chai": "~1.4.0",
+    "mocha": "~1.7.4"
+  }
 }
