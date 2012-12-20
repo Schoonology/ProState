@@ -1,4 +1,5 @@
 var choice = require('../'),
+    util = require('util'),
     expect = require('chai').expect
 
 describe('Actor', function () {
@@ -25,6 +26,23 @@ describe('Actor', function () {
       Empty: {}
     })
     self.actor.methodCalled = false
+
+    self.MyActor = function MyActor() {
+      choice.Actor.call(this)
+
+      this.overrideCalled = false
+      this.defineState('Override', {
+        method: function () {
+          this.overrideCalled = true
+          return 'Overridden!'
+        }
+      })
+    }
+    util.inherits(self.MyActor, choice.Actor)
+
+    self.MyActor.prototype.method = function() {
+      return 'No Override'
+    };
   })
 
   it('should start at the "null" state', function () {
@@ -148,6 +166,23 @@ describe('Actor', function () {
 
       expect(this.actor.state).to.equal(null)
       expect(this.actor.method).to.not.exist
+    })
+  })
+
+  describe('prototype', function () {
+    it('should use the prototype methods as the defaults', function () {
+      var myActor = new this.MyActor()
+
+      expect(myActor instanceof choice.Actor).to.be.true
+      expect(myActor.state).to.equal(null)
+      expect(myActor.method()).to.equal('No Override')
+      expect(myActor.overrideCalled).to.be.false
+
+      myActor.state = 'Override'
+
+      expect(myActor.state).to.equal('Override')
+      expect(myActor.method()).to.equal('Overridden!')
+      expect(myActor.overrideCalled).to.be.true
     })
   })
 })
