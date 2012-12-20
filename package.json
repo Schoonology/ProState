@@ -1,6 +1,6 @@
 {
   "name": "prostate",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple stateful Object prototype inspired by Unreal Engine 3 Actors.",
   "main": "index.js",
   "author": "Michael Schoonmaker <michael.r.schoonmaker@gmail.com>",
