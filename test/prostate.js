@@ -31,12 +31,14 @@ describe('Actor', function () {
       ProState.Actor.call(this)
 
       this.overrideCalled = false
-      this.defineState('Override', {
+    }
+    self.MyActor.states = {
+      Override: {
         method: function () {
           this.overrideCalled = true
           return 'Overridden!'
         }
-      })
+      }
     }
     util.inherits(self.MyActor, ProState.Actor)
 
