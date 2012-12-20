@@ -1,1 +1,1 @@
-module.exports = require('./lib/choice')
+module.exports = require('./lib/prostate')

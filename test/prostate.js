@@ -1,4 +1,4 @@
-var choice = require('../'),
+var ProState = require('../'),
     util = require('util'),
     expect = require('chai').expect
 
@@ -9,7 +9,7 @@ describe('Actor', function () {
     self.begun = false
     self.ended = false
 
-    self.actor = choice.createActor({
+    self.actor = ProState.createActor({
       Test: {
         begin: function (previousState) {
           self.begun = true
@@ -28,7 +28,7 @@ describe('Actor', function () {
     self.actor.methodCalled = false
 
     self.MyActor = function MyActor() {
-      choice.Actor.call(this)
+      ProState.Actor.call(this)
 
       this.overrideCalled = false
       this.defineState('Override', {
@@ -38,7 +38,7 @@ describe('Actor', function () {
         }
       })
     }
-    util.inherits(self.MyActor, choice.Actor)
+    util.inherits(self.MyActor, ProState.Actor)
 
     self.MyActor.prototype.method = function() {
       return 'No Override'
@@ -173,7 +173,7 @@ describe('Actor', function () {
     it('should use the prototype methods as the defaults', function () {
       var myActor = new this.MyActor()
 
-      expect(myActor instanceof choice.Actor).to.be.true
+      expect(myActor instanceof ProState.Actor).to.be.true
       expect(myActor.state).to.equal(null)
       expect(myActor.method()).to.equal('No Override')
       expect(myActor.overrideCalled).to.be.false
