@@ -1,0 +1,12 @@
+{
+  "name": "choice",
+  "version": "0.1.0",
+  "description": "A simple stateful Object prototype inspired by Unreal Engine 3 Actors.",
+  "main": "index.js",
+  "author": "Michael Schoonmaker <michael.r.schoonmaker@gmail.com>",
+  "scripts": {
+    "test": "mocha --reporter spec"
+  },
+  "repository": "",
+  "license": "MIT"
+}
