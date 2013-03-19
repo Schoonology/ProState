@@ -11,6 +11,7 @@ describe('Actor', function () {
 
     self.actor = ProState.createActor({
       Test: {
+        property: 42,
         begin: function (previousState) {
           self.begun = true
           this.previousState = previousState
@@ -66,6 +67,12 @@ describe('Actor', function () {
       expect(this.actor.method).to.exist
     })
 
+    it('should inject the state\'s properties', function () {
+      this.actor.goToState('Test')
+
+      expect(this.actor.property).to.equal(42)
+    })
+
     it('should preserve this in injected methods', function () {
       this.actor.goToState('Test')
 
@@ -79,11 +86,13 @@ describe('Actor', function () {
 
       expect(this.actor.state).to.equal('Test')
       expect(this.actor.method).to.exist
+      expect(this.actor.property).to.exist
 
       this.actor.goToState(null)
 
       expect(this.actor.state).to.equal(null)
       expect(this.actor.method).to.not.exist
+      expect(this.actor.property).to.not.exist
     })
 
     it('should run any "begin" handlers', function () {
